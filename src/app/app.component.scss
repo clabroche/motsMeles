@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    .grid{
+        display: flex;
+        flex-direction: column;
+        display: inline-block;
+        border: 1px solid darkgrey;
+        box-shadow: 1px 1px 1px lightgrey;
+        margin: 10px;
+        background-color: #f0f0f0;
+        .line {
+            display: flex;
+            .letter{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 1.5em;
+                height: 1.5em;
+            }
+        }
+    }
+    .wordsContainer {
+        border: 1px solid darkgrey;
+        box-shadow: 1px 1px 1px lightgrey;
+        width: 100%;
+        margin: 10px;
+        .words {
+            padding: 10px;
+        }
+        .header{
+            padding: 10px;
+            background-color: #2b276c;
+            color: white;
+            width: 100%;
+        }
+    }
+}
+div {
+    box-sizing: border-box;
+}
