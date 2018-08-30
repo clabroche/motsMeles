@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+.host-container {
+    min-width: 0 !important;
+}
+button{
+    background-color: var(--headerBgColor);
+    padding: 10px;
+    color: white;
+    border: none;
+    font-weight: bold;
+}

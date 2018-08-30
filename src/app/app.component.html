@@ -1,17 +1,52 @@
 <div class="container">
   <div class="grid">
     <div class="line" *ngFor='let line of gridService.grid'>
-      <div class="letter" *ngFor='let letter of line'>
-        {{letter}}
-      </div>
-    </div>
-  </div>
-  <div class="wordsContainer">
-    <div class="header">Mots</div>
-    <div class="words">
-      <div *ngFor="let word of gridService.allWords">
-        {{ word }}
+      <div class="letter" [ngClass]="{'selected': letter.selected, 'foundX': letter.foundX,'foundY': letter.foundY}" *ngFor='let letter of line' (click)="select(letter)">
+        {{letter.letter}}
       </div>
     </div>
   </div>
 </div>
+
+<div class="actions">
+  <button (click)="settingsPanel.open()">Paramètres</button>
+  <button (click)="wordsPanel.open()">Mots à trouver</button>
+</div>
+
+
+<div class="end" *ngIf='gridService.end'>
+  Fin
+  <button (click)="generate()">Regenerer une grille</button>
+</div>
+
+<clt-side-panel [title]="'Hey'" direction="bottom" [noActions]="true" #settingsPanel>
+  <div *clt-popup-body>
+    <form [formGroup]="gridForm">
+      <div class="label">Brouiller les pistes</div>
+      <input type="checkbox" formControlName="hidden">
+      <div class="label">Width</div>
+      <input type="number" formControlName="width">
+      <div class="label">Height</div>
+      <input type="number" formControlName="height">
+      <button (click)="warn()">Generation</button>
+    </form>
+  </div>
+</clt-side-panel>
+<clt-side-panel [title]="'Hey'" direction="bottom" [noActions]="true" #wordsPanel>
+  <div *clt-popup-body>
+    <div class="categories">
+      <div class="category" *ngFor="let category of gridService.allWords | words">
+        <div class="category-header">{{category.nbLetters}} lettres</div>
+        <div class="word" *ngFor="let word of category.letters" [ngClass]="{found: word.found}">
+          {{ word.word }}
+        </div>
+      </div>
+    </div>
+  </div>
+</clt-side-panel>
+
+<clt-popup #warningPopup width="90vw">
+  <div *clt-popup-body>
+    Attention, vous perdrez la partie en cours.
+  </div>
+</clt-popup>
