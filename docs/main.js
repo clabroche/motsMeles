@@ -30,7 +30,7 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\n  <div class=\"grid\">\n    <div class=\"line\" *ngFor='let line of gridService.grid'>\n      <div class=\"letter\" *ngFor='let letter of line'>\n        {{letter}}\n      </div>\n    </div>\n  </div>\n  <div class=\"wordsContainer\">\n    <div class=\"header\">Mots</div>\n    <div class=\"words\">\n      <div *ngFor=\"let word of gridService.allWords\">\n        {{ word }}\n      </div>\n    </div>\n  </div>\n</div>"
+module.exports = "<div class=\"container\">\n  <div class=\"grid\">\n    <div class=\"line\" *ngFor='let line of gridService.grid'>\n      <div class=\"letter\" [ngClass]=\"{'selected': letter.selected, 'foundX': letter.foundX,'foundY': letter.foundY}\" *ngFor='let letter of line' (click)=\"select(letter)\">\n        {{letter.letter}}\n      </div>\n    </div>\n  </div>\n</div>\n\n<div class=\"actions\">\n  <button (click)=\"settingsPanel.open()\">Paramètres</button>\n  <button (click)=\"wordsPanel.open()\">Mots à trouver</button>\n</div>\n\n\n<div class=\"end\" *ngIf='gridService.end'>\n  Fin\n  <button (click)=\"generate()\">Regenerer une grille</button>\n</div>\n\n<clt-side-panel [title]=\"'Hey'\" direction=\"bottom\" [noActions]=\"true\" #settingsPanel>\n  <div *clt-popup-body>\n    <form [formGroup]=\"gridForm\">\n      <div class=\"label\">Brouiller les pistes</div>\n      <input type=\"checkbox\" formControlName=\"hidden\">\n      <div class=\"label\">Width</div>\n      <input type=\"number\" formControlName=\"width\">\n      <div class=\"label\">Height</div>\n      <input type=\"number\" formControlName=\"height\">\n      <button (click)=\"warn()\">Generation</button>\n    </form>\n  </div>\n</clt-side-panel>\n<clt-side-panel [title]=\"'Hey'\" direction=\"bottom\" [noActions]=\"true\" #wordsPanel>\n  <div *clt-popup-body>\n    <div class=\"categories\">\n      <div class=\"category\" *ngFor=\"let category of gridService.allWords | words\">\n        <div class=\"category-header\">{{category.nbLetters}} lettres</div>\n        <div class=\"word\" *ngFor=\"let word of category.letters\" [ngClass]=\"{found: word.found}\">\n          {{ word.word }}\n        </div>\n      </div>\n    </div>\n  </div>\n</clt-side-panel>\n\n<clt-popup #warningPopup width=\"90vw\">\n  <div *clt-popup-body>\n    Attention, vous perdrez la partie en cours.\n  </div>\n</clt-popup>"
 
 /***/ }),
 
@@ -41,7 +41,7 @@ module.exports = "<div class=\"container\">\n  <div class=\"grid\">\n    <div cl
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".container {\n  display: flex; }\n  .container .grid {\n    display: flex;\n    flex-direction: column;\n    display: inline-block;\n    border: 1px solid darkgrey;\n    box-shadow: 1px 1px 1px lightgrey;\n    margin: 10px;\n    background-color: #f0f0f0; }\n  .container .grid .line {\n      display: flex; }\n  .container .grid .line .letter {\n        display: flex;\n        justify-content: center;\n        align-items: center;\n        width: 1.5em;\n        height: 1.5em; }\n  .container .wordsContainer {\n    border: 1px solid darkgrey;\n    box-shadow: 1px 1px 1px lightgrey;\n    width: 100%;\n    margin: 10px; }\n  .container .wordsContainer .words {\n      padding: 10px; }\n  .container .wordsContainer .header {\n      padding: 10px;\n      background-color: #2b276c;\n      color: white;\n      width: 100%; }\n  div {\n  box-sizing: border-box; }\n"
+module.exports = ".container {\n  display: flex; }\n  .container .grid {\n    display: inline-block;\n    height: 100%;\n    max-height: 90vh;\n    border: 1px solid darkgrey;\n    box-shadow: 1px 1px 1px lightgrey;\n    background-color: #f0f0f0;\n    overflow: scroll;\n    width: 100%; }\n  .container .grid .line {\n      display: flex;\n      justify-content: center; }\n  .container .grid .line .letter {\n        display: flex;\n        flex-shrink: 0;\n        justify-content: center;\n        align-items: center;\n        width: 1.5em;\n        height: 1.5em; }\n  .container .grid .line .letter:hover {\n          background-color: rgba(0, 0, 0, 0.2);\n          border-radius: 100%; }\n  .container .grid .line .letter.selected {\n          background-color: #2b276c;\n          color: white;\n          border-radius: 100%; }\n  .container .grid .line .letter.foundX::before {\n          background-color: black;\n          width: 1.5em;\n          height: 1px;\n          content: '';\n          position: absolute; }\n  .container .grid .line .letter.foundY::after {\n          background-color: black;\n          height: 1.5em;\n          width: 1px;\n          content: '';\n          position: absolute; }\n  .categories {\n  display: flex;\n  justify-content: space-between;\n  flex-wrap: wrap; }\n  .categories .category {\n    width: 49%;\n    margin-top: 10px;\n    border: 1px solid lightgrey;\n    box-shadow: 1px 1px 1px darkgrey; }\n  .categories .category .category-header {\n      text-align: center;\n      font-weight: bold;\n      background-color: #466c80;\n      color: white; }\n  .categories .category .word {\n      display: flex;\n      align-items: center;\n      position: relative;\n      padding-left: 1em; }\n  .categories .category .word.found::before {\n        content: '\\2714';\n        position: absolute;\n        margin-left: -1em;\n        color: #37ad68; }\n  div {\n  box-sizing: border-box; }\n  .actions {\n  width: 100%; }\n  .end {\n  width: 100vw;\n  height: 100vh;\n  position: absolute;\n  top: 0;\n  left: 0;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  color: white;\n  background-color: rgba(0, 0, 0, 0.75);\n  font-size: 2em; }\n  .actions {\n  position: absolute;\n  bottom: 0;\n  width: 100%;\n  left: 0;\n  display: flex;\n  justify-content: space-between; }\n"
 
 /***/ }),
 
@@ -57,6 +57,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppComponent", function() { return AppComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _providers_grid_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./providers/grid.service */ "./src/app/providers/grid.service.ts");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var ngx_callisto_dist__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ngx-callisto/dist */ "./node_modules/ngx-callisto/dist/esm5/ngx-callisto.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -68,18 +70,60 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+
+
 var AppComponent = /** @class */ (function () {
-    function AppComponent(gridService) {
+    function AppComponent(gridService, fb, theme) {
         this.gridService = gridService;
-        this.title = 'motsMelees';
+        this.fb = fb;
     }
+    AppComponent.prototype.ngOnInit = function () {
+        this.gridForm = this.fb.group({
+            width: [5, [_angular_forms__WEBPACK_IMPORTED_MODULE_2__["Validators"].required]],
+            height: [5, [_angular_forms__WEBPACK_IMPORTED_MODULE_2__["Validators"].required]],
+            hidden: [true, [_angular_forms__WEBPACK_IMPORTED_MODULE_2__["Validators"].required]]
+        });
+        this.generate();
+    };
+    AppComponent.prototype.generate = function () {
+        this.gridService.generateGrid(this.gridForm.value.width, this.gridForm.value.height, this.gridForm.value.hidden);
+    };
+    AppComponent.prototype.select = function (letter) {
+        if (this.selectedLetter) {
+            this.gridService.selectWord(this.selectedLetter, letter);
+            letter.selected = false;
+            this.selectedLetter.selected = false;
+            this.selectedLetter = null;
+        }
+        else {
+            letter.selected = true;
+            this.selectedLetter = letter;
+        }
+    };
+    AppComponent.prototype.warn = function () {
+        var _this = this;
+        this.settingsPanel.close();
+        this.warningPopup.open().subscribe(function (result) {
+            if (!result)
+                return;
+            _this.generate();
+        });
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])('warningPopup'),
+        __metadata("design:type", ngx_callisto_dist__WEBPACK_IMPORTED_MODULE_3__["CltPopupComponent"])
+    ], AppComponent.prototype, "warningPopup", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])('settingsPanel'),
+        __metadata("design:type", ngx_callisto_dist__WEBPACK_IMPORTED_MODULE_3__["CltPopupComponent"])
+    ], AppComponent.prototype, "settingsPanel", void 0);
     AppComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-root',
             template: __webpack_require__(/*! ./app.component.html */ "./src/app/app.component.html"),
             styles: [__webpack_require__(/*! ./app.component.scss */ "./src/app/app.component.scss")]
         }),
-        __metadata("design:paramtypes", [_providers_grid_service__WEBPACK_IMPORTED_MODULE_1__["GridService"]])
+        __metadata("design:paramtypes", [_providers_grid_service__WEBPACK_IMPORTED_MODULE_1__["GridService"], _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormBuilder"], ngx_callisto_dist__WEBPACK_IMPORTED_MODULE_3__["CltThemeService"]])
     ], AppComponent);
     return AppComponent;
 }());
@@ -99,9 +143,13 @@ var AppComponent = /** @class */ (function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppModule", function() { return AppModule; });
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
-/* harmony import */ var _providers_grid_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./providers/grid.service */ "./src/app/providers/grid.service.ts");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm5/animations.js");
+/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
+/* harmony import */ var _providers_grid_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./providers/grid.service */ "./src/app/providers/grid.service.ts");
+/* harmony import */ var ngx_callisto_dist__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ngx-callisto/dist */ "./node_modules/ngx-callisto/dist/esm5/ngx-callisto.js");
+/* harmony import */ var _pipe_words_pipe__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./pipe/words.pipe */ "./src/app/pipe/words.pipe.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -112,22 +160,74 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 
 
+
+
+
+
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
     AppModule = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["NgModule"])({
             declarations: [
-                _app_component__WEBPACK_IMPORTED_MODULE_2__["AppComponent"]
+                _app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"],
+                _pipe_words_pipe__WEBPACK_IMPORTED_MODULE_7__["WordsPipe"]
             ],
             imports: [
-                _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"]
+                _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
+                _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_3__["BrowserAnimationsModule"],
+                _angular_forms__WEBPACK_IMPORTED_MODULE_1__["ReactiveFormsModule"],
+                ngx_callisto_dist__WEBPACK_IMPORTED_MODULE_6__["CltOverlayModule"].forRoot()
             ],
-            providers: [_providers_grid_service__WEBPACK_IMPORTED_MODULE_3__["GridService"]],
-            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_2__["AppComponent"]]
+            providers: [_providers_grid_service__WEBPACK_IMPORTED_MODULE_5__["GridService"]],
+            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"]]
         })
     ], AppModule);
     return AppModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/pipe/words.pipe.ts":
+/*!************************************!*\
+  !*** ./src/app/pipe/words.pipe.ts ***!
+  \************************************/
+/*! exports provided: WordsPipe */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WordsPipe", function() { return WordsPipe; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+var WordsPipe = /** @class */ (function () {
+    function WordsPipe() {
+    }
+    WordsPipe.prototype.transform = function (words, args) {
+        var categoriesObject = {};
+        words.map(function (word) {
+            if (!categoriesObject[word.word.length])
+                categoriesObject[word.word.length] = [];
+            categoriesObject[word.word.length].push(word);
+        });
+        return Object.keys(categoriesObject).map(function (key) {
+            return { nbLetters: key, letters: categoriesObject[key] };
+        });
+    };
+    WordsPipe = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Pipe"])({
+            name: 'words'
+        })
+    ], WordsPipe);
+    return WordsPipe;
 }());
 
 
@@ -145,6 +245,7 @@ var AppModule = /** @class */ (function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GridService", function() { return GridService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -155,6 +256,7 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var dico = __webpack_require__(/*! ./liste_francais.json */ "./src/app/providers/liste_francais.json");
 var GridService = /** @class */ (function () {
     function GridService() {
@@ -164,10 +266,15 @@ var GridService = /** @class */ (function () {
         this.allWords = [];
         this.possibilities = [];
         this.grid = [];
-        this.generateGrid(10, 10);
+        this.gridError = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+        this.end = false;
     }
-    GridService.prototype.generateGrid = function (width, height) {
+    GridService.prototype.generateGrid = function (width, height, hidden) {
         var _this = this;
+        if (hidden === void 0) { hidden = true; }
+        if (width < 1 || height < 1)
+            return this.gridError.next('La hauteur et la largeur sont supérieurs à 0');
+        this.end = false;
         this.width = width;
         this.height = height;
         this.grid = Array(this.height).fill('').map(function (y) { return Array(_this.width).fill('°'); });
@@ -176,18 +283,20 @@ var GridService = /** @class */ (function () {
         this.grid.map(function (line, y) {
             line.map(function (_, x) {
                 _this.possibilities.push({ x: x, y: y });
+                _this.grid[y][x] = { x: x, y: y, letter: '°', selected: false, foundY: false, foundX: false };
             });
         });
         this.nbWordToPlaceInGrid = (this.width * this.height) / 10;
         this.placeWords();
-        this.shufflingEmptySlot();
+        if (hidden)
+            this.shufflingEmptySlot();
     };
     GridService.prototype.shufflingEmptySlot = function () {
         var letters = 'abcdefghijklmnopqrstuvwyàéèçeê';
         for (var y = 0; y < this.grid.length; y++) {
             for (var x = 0; x < this.grid[y].length; x++) {
-                if (this.grid[x][y] === '°') {
-                    this.grid[x][y] = letters.charAt(Math.floor(Math.random() * letters.length));
+                if (this.grid[y][x].letter === '°') {
+                    this.grid[y][x].letter = letters.charAt(Math.floor(Math.random() * letters.length));
                 }
             }
         }
@@ -225,7 +334,7 @@ var GridService = /** @class */ (function () {
         for (var i = 0; i < word.length; i++) {
             var letter = word[i];
             var toX = x + i * direction;
-            if (this.grid[y][toX] === '°' || this.grid[y][toX] === letter) {
+            if (this.grid[y][toX] && (this.grid[y][toX].letter === '°' || this.grid[y][toX].letter === letter)) {
                 wordLocations.push({ letter: letter, x: toX, y: y });
             }
             else {
@@ -233,7 +342,7 @@ var GridService = /** @class */ (function () {
             }
         }
         if (placed) {
-            this.allWords.push(word);
+            this.allWords.push({ word: word, found: false });
             return this.integrateChanges(wordLocations);
         }
     };
@@ -243,7 +352,7 @@ var GridService = /** @class */ (function () {
         for (var i = 0; i < word.length; i++) {
             var letter = word[i];
             var toY = y + i * direction;
-            if (this.grid[toY] && (this.grid[toY][x] === '°' || this.grid[toY][x] === letter)) {
+            if (this.grid[toY] && (this.grid[toY][x].letter === '°' || this.grid[toY][x].letter === letter)) {
                 wordLocations.push({ letter: letter, x: x, y: toY });
             }
             else {
@@ -251,16 +360,68 @@ var GridService = /** @class */ (function () {
             }
         }
         if (placed) {
-            this.allWords.push(word);
+            this.allWords.push({ word: word, found: false });
             return this.integrateChanges(wordLocations);
         }
     };
     GridService.prototype.integrateChanges = function (wordLocations) {
         var _this = this;
         wordLocations.map(function (location) {
-            _this.grid[location.y][location.x] = location.letter;
+            _this.grid[location.y][location.x].letter = location.letter;
         });
         return true;
+    };
+    GridService.prototype.selectWord = function (letter1, letter2) {
+        if (!(letter1.x === letter2.x || letter1.y === letter2.y))
+            this.gridError.next('La ligne n`est pas valide');
+        var letters = [];
+        var direction = '';
+        // vertical bottom
+        if (letter1.x === letter2.x && letter1.y < letter2.y) {
+            for (var y = letter1.y; y < letter2.y; y++) {
+                letters.push(this.grid[y][letter1.x]);
+            }
+            direction = 'Y';
+        }
+        // vertical top
+        if (letter1.x === letter2.x && letter1.y > letter2.y) {
+            for (var y = letter1.y; y > letter2.y; y--) {
+                letters.push(this.grid[y][letter1.x]);
+            }
+            direction = 'Y';
+        }
+        // horizontal right
+        if (letter1.x < letter2.x && letter1.y === letter2.y) {
+            for (var x = letter1.x; x < letter2.x; x++) {
+                letters.push(this.grid[letter1.y][x]);
+            }
+            direction = 'X';
+        }
+        // horizontal left
+        if (letter1.x > letter2.x && letter1.y === letter2.y) {
+            for (var x = letter1.x; x > letter2.x; x--) {
+                letters.push(this.grid[letter1.y][x]);
+            }
+            direction = 'X';
+        }
+        letters.push(letter2);
+        var word = letters.map(function (letter) { return letter.letter; }).join('');
+        var found = false;
+        this.allWords.forEach(function (_word) {
+            if (_word.word === word) {
+                found = true;
+                _word.found = true;
+            }
+        });
+        if (found) {
+            if (direction === 'X')
+                letters.map(function (_letters) { return _letters.foundX = true; });
+            if (direction === 'Y')
+                letters.map(function (_letters) { return _letters.foundY = true; });
+            var end = this.allWords.map(function (_word) { return _word.found; }).filter(function (_word) { return _word; });
+            if (end.length === this.allWords.length)
+                this.end = true;
+        }
     };
     GridService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
@@ -346,7 +507,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/coco/Project-ssd/node/motsMelees/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /home/coco/Project/motsMeles/src/main.ts */"./src/main.ts");
 
 
 /***/ })
